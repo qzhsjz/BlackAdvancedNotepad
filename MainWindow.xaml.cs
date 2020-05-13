@@ -67,6 +67,8 @@ namespace MiniNotepad
         {
             InitializeComponent();
             DataContext = context;
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1) DoOpen(args[1]);
         }
 
         private void NewFile_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -309,7 +311,8 @@ namespace MiniNotepad
         {
             var ctx = DataContext as FileContext;
             InputDialog ind = new InputDialog("设置密码", "请输入密码（留空则使用默认密码）：");
-            ind.Owner = this;
+            try { ind.Owner = this; }
+            catch (System.InvalidOperationException) { ind.Title = "黑 色 高 级 记 事 本"; }
             if (ind.ShowDialog() != true || string.IsNullOrEmpty(ind.Result)) ctx.Password = "JeF8U9wHFOMfs2Y8";
             else ctx.Password = ind.Result;
             if (ctx.Status == FcStatus.Modified || ctx.Status == FcStatus.Opened) ApplicationCommands.Save.Execute(null, this);
