@@ -91,27 +91,35 @@ namespace MiniNotepad
         {
             var ctx = new FileContext(path);
             var oldctx = DataContext as FileContext;
-            DataContext = ctx;
-            ctx.Status = FcStatus.Opening;
-            if (ctx.Path.EndsWith(".bad"))
+            try
             {
-                CommandSetPassword.Execute(null, this);
-                ctx.Content = EncryptProvider.AESDecrypt(FakeJapaneseToBase64(File.ReadAllText(ctx.Path)), EncryptProvider.Md5(ctx.Password));
-                if (string.IsNullOrEmpty(ctx.Content))
+                DataContext = ctx;
+                ctx.Status = FcStatus.Opening;
+                if (ctx.Path.EndsWith(".bad"))
                 {
-                    MessageBox.Show(this, "解密失败，密码可能有错。");
-                    ctx.Path = string.Empty;
-                    DataContext = oldctx;
-                    return;
+                    CommandSetPassword.Execute(null, this);
+                    ctx.Content = EncryptProvider.AESDecrypt(FakeJapaneseToBase64(File.ReadAllText(ctx.Path)), EncryptProvider.Md5(ctx.Password));
+                    if (string.IsNullOrEmpty(ctx.Content))
+                    {
+                        MessageBox.Show(this, "解密失败，密码可能有错。");
+                        ctx.Path = string.Empty;
+                        DataContext = oldctx;
+                        return;
+                    }
+                    ctx.isBADFile = true;
                 }
-                ctx.isBADFile = true;
+                else
+                {
+                    ctx.isBADFile = false;
+                    ctx.Content = File.ReadAllText(ctx.Path);
+                }
+                ctx.Status = FcStatus.Opened;
             }
-            else
+            catch (UnauthorizedAccessException )
             {
-                ctx.isBADFile = false;
-                ctx.Content = File.ReadAllText(ctx.Path);
+                MessageBox.Show("程序无权访问该文件，请尝试使用管理员权限运行。");
+                DataContext = oldctx;
             }
-            ctx.Status = FcStatus.Opened;
         }
 
         private void SaveFile_Executed(object sender, ExecutedRoutedEventArgs e)
