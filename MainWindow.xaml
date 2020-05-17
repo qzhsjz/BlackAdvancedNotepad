@@ -82,13 +82,17 @@
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Visibility="{Binding VsStatusBar}">
-            <StatusBarItem>
+            <StatusBarItem Margin="0,0,5,0">
                 <TextBlock Text="{Binding MainStatusTxt}"/>
             </StatusBarItem>
-            <StatusBarItem>
+            <Line/>
+            <StatusBarItem Margin="5,0,5,0">
                 <TextBlock Text="{Binding BADFileStatusTxt}"/>
             </StatusBarItem>
+            <StatusBarItem Margin="5,0,0,0">
+                <TextBlock Text="{Binding CaretPositionTxt}"/>
+            </StatusBarItem>
         </StatusBar>
-        <TextBox x:Name="tbContent" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" TextChanged="tbContent_TextChanged" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" TextWrapping="{Binding TwContent}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{Binding Contentbg}" Foreground="{Binding Contentfg}" SelectionBrush="{Binding Contentsel}" PreviewDrop="MainWindow_OnPreviewDrop" PreviewDragOver="TbContent_OnPreviewDragOver" FontFamily="{Binding ContentFontFamily}" FontSize="{Binding ContentFontSize}" FontStyle="{Binding ContentFontStyle}" FontWeight="{Binding ContentFontWeight}"/>
+        <TextBox x:Name="tbContent" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" TextChanged="tbContent_TextChanged" SelectionChanged="TbContent_SelectionChanged" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" TextWrapping="{Binding TwContent}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{Binding Contentbg}" Foreground="{Binding Contentfg}" SelectionBrush="{Binding Contentsel}" BorderBrush="{Binding Contentbdr}" PreviewDrop="MainWindow_OnPreviewDrop" PreviewDragOver="TbContent_OnPreviewDragOver" FontFamily="{Binding ContentFontFamily}" FontSize="{Binding ContentFontSize}" FontStyle="{Binding ContentFontStyle}" FontWeight="{Binding ContentFontWeight}"/>
     </DockPanel>
 </Window>

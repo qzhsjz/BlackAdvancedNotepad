@@ -24,6 +24,10 @@ namespace MiniNotepad
         public string Content { get; set; }
         public FcStatus Status { get; set; }
 
+        public int Row { get; set; } = 1;
+        public int Column { get; set; } = 1;
+        public string CaretPositionTxt => "行 " + Row.ToString() + " ，列 " + Column.ToString();
+
         public string MainStatusTxt => Status == FcStatus.Opening ? "正在打开……" :
             Status == FcStatus.Saving ? "正在保存……" :
             Status == FcStatus.Opened ? "就绪" :
@@ -32,9 +36,10 @@ namespace MiniNotepad
         public string TitleTxt => ( Path != string.Empty ? Path : "无标题" ) + ( Status == FcStatus.Modified ? "*" : "" ) + (isBADFile ? " - 黑 色 高 级 记 事 本" : " - 记事本");
         
         public Visibility VsBADFile { get; set; } = Visibility.Collapsed;
-        public SolidColorBrush Contentbg { get; set; } = Brushes.White;
-        public SolidColorBrush Contentfg { get; set; } = Brushes.Black;
-        public SolidColorBrush Contentsel { get; set; } = Brushes.CornflowerBlue;
+        public Brush Contentbg { get; set; } = Brushes.White;
+        public Brush Contentfg { get; set; } = Brushes.Black;
+        public Brush Contentsel { get; set; } = SystemParameters.WindowGlassBrush;
+        public Brush Contentbdr { get; set; } = SystemColors.ActiveBorderBrush;
         private bool _isBADFile = false;
         public bool isBADFile
         {
@@ -45,7 +50,8 @@ namespace MiniNotepad
                 VsBADFile = value ? Visibility.Visible : Visibility.Collapsed;
                 Contentbg = value ? Brushes.Black : Brushes.White;
                 Contentfg = value ? Brushes.White : Brushes.Black;
-                Contentsel = value ? Brushes.White : Brushes.CornflowerBlue;
+                Contentsel = value ? Brushes.White : SystemParameters.WindowGlassBrush;
+                Contentbdr = value ? Brushes.White : SystemColors.ActiveBorderBrush;
             }
         }
 

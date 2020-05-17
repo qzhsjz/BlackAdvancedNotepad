@@ -45,18 +45,20 @@ namespace MiniNotepad
 
         private const string fjcode = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやよらりるれろわをぐげござじずぞだぢづでばびぶべぱぴぷぺぽん";
         private const string b64code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        private const string prefix = "先辈真言：";
+        private const string prefix = "先輩は言いました。";
         internal string Base64ToFakeJapanese(string b64)
         {
             string ret = string.Empty;
             ret += prefix;
+            ret += "「";
             foreach (char c in b64) ret += fjcode[b64code.IndexOf(c)];
+            ret += "」";
             return ret;
         }
         internal string FakeJapaneseToBase64(string fj)
         {
             string ret = string.Empty;
-            fj = fj.Substring(prefix.Length);
+            fj = fj.Substring(fj.IndexOf("「") + 1, fj.LastIndexOf("」") - fj.IndexOf("「") - 1);
             foreach (char c in fj) ret += b64code[fjcode.IndexOf(c)];
             return ret;
         }
@@ -73,7 +75,8 @@ namespace MiniNotepad
 
         private void NewFile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            DataContext = new FileContext();
+            var ctx = new FileContext();
+            DataContext = ctx;
         }
 
         private void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -226,7 +229,7 @@ namespace MiniNotepad
 
         private void ShowHelp_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", "https://github.com/qzhsjz/BlackAdvancedNotepad");
+            System.Diagnostics.Process.Start("explorer.exe", "https://github.com/qzhsjz/BlackAdvancedNotepad/wiki/%E5%B8%AE%E5%8A%A9%E4%B8%BB%E9%A2%98");
         }
 
         private void FeedBack_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -353,6 +356,13 @@ namespace MiniNotepad
                 FixedDocumentSequence fixedDocSeq = xpsDocument.GetFixedDocumentSequence();
                 pDialog.PrintDocument(fixedDocSeq.DocumentPaginator, "打印任务");
             }
+        }
+
+        private void TbContent_SelectionChanged(object sender, EventArgs e)
+        {
+            var ctx = DataContext as FileContext;
+            ctx.Row = tbContent.GetLineIndexFromCharacterIndex(tbContent.CaretIndex) + 1;
+            ctx.Column = tbContent.CaretIndex - tbContent.GetCharacterIndexFromLineIndex(ctx.Row - 1) + 1;
         }
     }
 }
