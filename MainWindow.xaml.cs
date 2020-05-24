@@ -101,10 +101,17 @@ namespace MiniNotepad
                 if (ctx.Path.EndsWith(".bad"))
                 {
                     CommandSetPassword.Execute(null, this);
-                    ctx.Content = EncryptProvider.AESDecrypt(FakeJapaneseToBase64(File.ReadAllText(ctx.Path)), EncryptProvider.Md5(ctx.Password));
+                    try
+                    {
+                        ctx.Content = EncryptProvider.AESDecrypt(FakeJapaneseToBase64(File.ReadAllText(ctx.Path)), EncryptProvider.Md5(ctx.Password));
+                    }
+                    catch (Exception)
+                    {
+                        ctx.Content = null;
+                    }
                     if (string.IsNullOrEmpty(ctx.Content))
                     {
-                        MessageBox.Show(this, "解密失败，密码可能有错。");
+                        MessageBox.Show(this, "解密失败，文件格式不正确或密码有错。");
                         ctx.Path = string.Empty;
                         DataContext = oldctx;
                         return;
@@ -118,7 +125,7 @@ namespace MiniNotepad
                 }
                 ctx.Status = FcStatus.Opened;
             }
-            catch (UnauthorizedAccessException )
+            catch (UnauthorizedAccessException)
             {
                 MessageBox.Show("程序无权访问该文件，请尝试使用管理员权限运行。");
                 DataContext = oldctx;
